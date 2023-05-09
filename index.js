@@ -16,7 +16,7 @@ require("./config/passport")(passport)
 
 
 // MongoDB Atlas (cloud)
-connectDB() 
+await connectDB()
 
 // MongoDB Local
 // mongoose.connect(process.env.LOCALHOST, {
@@ -30,18 +30,26 @@ app.use(express.urlencoded({
     extended: true
 }))
 
+app.use(express.json());
+// CORS
+app.use(cors(
+    {
+        origin: "http://localhost:3000",
+        credentials: true
+    }
+))
+
 // Cookies
 app.use(session({
-    secret: "session_sec",
-    resave: false,
-    saveUninitialized: false,
+    secret: "session_secret",
+    resave: true,
+    saveUninitialized: true,
     store: MongoStore.create({
         mongoUrl: process.env.MONGODB_URI 
     })
 }))
 
-// CORS
-app.use(cors())
+
 
 // Passport
 app.use(passport.initialize())
